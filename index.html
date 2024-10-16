@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf8">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+  <style>
+    .radio-player, .radio-station {
+      margin: 30px;
+    }
+    .button {
+      vertical-align: middle;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      background-color: #a7e100;
+      color: #fff;
+      border-radius: 100%;
+    }
+    .play-pause-button {
+      width: 70px;
+      height: 70px;
+      font-size: 25px;
+      margin-right: 24px;
+    }
+    .mute-button {
+      width: 30px;
+      height: 30px;
+      margin-right: 12px;
+    }
+    .player-controls {
+      display: flex;
+      align-items: center;
+    }
+    .currently-playing {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+    }
+    .volume-controls {
+      display: flex;
+      align-items: center;
+    }
+    .currently-playing-label {
+      font-size: 12px;
+      font-weight: 300;
+      color: #014f81;
+    }
+    .currently-playing-title {
+      font-size: 22px;
+      color: #009cff;
+    }
+    .volume {
+      -webkit-appearance: none;
+      appearance: none;
+      border: 1px solid #009cff;
+      border-radius: 50px;
+      overflow: hidden; /* This will help with styling the thumb */
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+
+      height: 15px;
+      width: 15px;
+
+      cursor: ew-resize;
+      background: #73c8ff;
+      box-shadow: -400px 0 0 390px #73c8ff;
+      border-radius: 50%;
+    }
+    input[type="range"]::-moz-range-thumb {
+      /* same as above */
+    }
+    input[type="range"]::-ms-thumb {
+      /* same as above */
+    }
+    input[type="range"]:focus {
+      border-radius: 50px;
+      box-shadow: 0 0 15px -4px #73c8ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="radio-player">
+    <audio src="" class="visually-hidden" id="stream">
+      <!-- More stuff here -->
+    </audio>
+    <div class="player-controls">
+      <button name="play-pause" class="button play-pause-button" aria-label="Play/pause" disabled>
+      <i class="fas fa-play" aria-hidden></i>
+      </button>
+
+      <div class="volume-and-title">
+        <div class="currently-playing" aria-label="Currently playing">
+          <span class="currently-playing-label">Now playing on Some Radio Station</span>
+          <span class="currently-playing-title">Listen to Some Radio Station</span>
+        </div>
+
+        <div class="volume-controls">
+          <button name="mute" class="button mute-button" aria-label="Mute/unmute">
+            <i class="fas fa-volume-down" aria-hidden></i>
+          </button>
+
+        <input type="range" name="volume" class="volume" min="0" max="1" step="0.05" value="0.2" aria-label="Volume">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="radio-station">
+    <ol id="list_station">
+      <li data-stream="https://online.kissfm.ua/KissFM_HD" data-metadata="https://o.tavrmedia.ua/kiss">KISS FM</li>
+      <li data-stream="https://online.kissfm.ua/KissFM_Ukr_HD" data-metadata="https://o.tavrmedia.ua/kissukr">KISS FM Ukrainian</li>
+      <li data-stream="https://online.kissfm.ua/KissFM_Deep_HD" data-metadata="https://o.tavrmedia.ua/kissdeep">KISS FM Deep</li>
+      <li data-stream="https://online.kissfm.ua/KissFM_Digital_HD" data-metadata="https://o.tavrmedia.ua/kissdigital">KISS FM Digital</li>
+      <li data-stream="https://online.radiorelax.ua/RadioRelax_HD" data-metadata="https://o.tavrmedia.ua/relax">Ефір Радіо Relax</li>
+      <li data-stream="https://online.radiorelax.ua/RadioRelax_Ukr_HD" data-metadata="https://o.tavrmedia.ua/relaxukr">Relax Українською</li>
+      <li data-stream="https://online.radiorelax.ua/RadioRelax_Int_HD" data-metadata="https://o.tavrmedia.ua/relaxint">Relax International</li>
+      <li data-stream="https://online.radiorelax.ua/RadioRelax_Cafe_HD" data-metadata="https://o.tavrmedia.ua/relaxcafe">Relax Cafe</li>
+      <li data-stream="https://online.radiorelax.ua/RadioRelax_Instrumental_HD" data-metadata="https://o.tavrmedia.ua/relaxinstrumental">Relax Instrumental</li>
+      <li data-stream="https://online.hitfm.ua/HitFM_HD" data-metadata="https://o.tavrmedia.ua/hit">Ефір Хіт FM</li>
+      <li data-stream="https://online.hitfm.ua/HitFM_Ukr_HD" data-metadata="https://o.tavrmedia.ua/hitu">Хіт FM Українські хіти</li>
+      <li data-stream="https://online.hitfm.ua/HitFM_Best_HD" data-metadata="https://o.tavrmedia.ua/hitb">Хіт FM Найбільші хіти</li>
+      <li data-stream="https://online.hitfm.ua/HitFM_Top_HD" data-metadata="https://o.tavrmedia.ua/hitt">Хіт FM Сучасні хіти</li>
+      <li data-stream="https://online.melodiafm.ua/MelodiaFM_HD" data-metadata="https://o.tavrmedia.ua/melodia">Ефір Мелодія FM</li>
+      <li data-stream="https://online.melodiafm.ua/MelodiaFM_Int_HD" data-metadata="https://o.tavrmedia.ua/melodiaint">Мелодія FM International</li>
+      <li data-stream="https://online.melodiafm.ua/MelodiaFM_Disco_HD" data-metadata="https://o.tavrmedia.ua/melodiad">Мелодія FM Disco</li>
+      <li data-stream="https://online.melodiafm.ua/MelodiaFM_Romantic_HD" data-metadata="https://o.tavrmedia.ua/melodiar">Мелодія FM Romantic</li> 
+      <li data-stream="https://online.radioplayer.ua/FlashRadio_HD" data-metadata="https://o.tavrmedia.ua/radio3flash">Flash Radio</li>
+      <li data-stream="https://online.radioroks.ua/RadioROKS_HD" data-metadata="https://o.tavrmedia.ua/roks">Ефір Radio ROKS</li>
+      <li data-stream="https://online.radioroks.ua/RadioROKS_Ukr_HD" data-metadata="https://o.tavrmedia.ua/roksukr">Radio ROKS Український рок</li>
+      <li data-stream="https://online.radioroks.ua/RadioROKS_NewRock_HD" data-metadata="https://o.tavrmedia.ua/roksnew">Radio ROKS Новий Рок</li>
+      <li data-stream="https://online.radioroks.ua/RadioROKS_ClassicRock_HD" data-metadata="https://o.tavrmedia.ua/rokscla">Radio ROKS Classic Rock</li>
+      <li data-stream="https://online.radioroks.ua/RadioROKS_HardnHeavy_HD" data-metadata="https://o.tavrmedia.ua/rokshar">Radio ROKS Hard'n'Heavy</li>
+      <li data-stream="https://online.radioroks.ua/RadioROKS_Ballads_HD" data-metadata="https://o.tavrmedia.ua/roksbal">Radio ROKS Рок-Балади</li>
+      <li data-stream="https://online.radioplayer.ua/RadioGold_HD" data-metadata="https://o.tavrmedia.ua/radio3gold">Radio Gold</li>
+      <li data-stream="https://online.radioplayer.ua/RadioIndieUA_HD" data-metadata="https://o.tavrmedia.ua/radio3indieua">Радіо Інді.UA</li>
+      <li data-stream="https://online.radiobayraktar.ua/RadioBayraktar_HD" data-metadata="https://o.tavrmedia.ua/radio3bayraktar">Радіо Байрактар</li>
+      <li data-stream="https://online.nasheradio.ua/NasheRadio_HD" data-metadata="https://o.tavrmedia.ua/nasheradio">Ефір Наше Радіо</li>
+      <li data-stream="https://online.nasheradio.ua/NasheRadio_Ukr_HD" data-metadata="https://o.tavrmedia.ua/nasheradio3ukr">Наше Радіо УкрТоп100</li>
+      <li data-stream="https://online.radioplayer.ua/GuliayRadio_HD" data-metadata="https://o.tavrmedia.ua/radio3guliay">Гуляй Радіо</li>
+    </ol>
+  </div>
+<script>
+const audio = document.querySelector('#stream');
+const playPauseButton = document.querySelector('[name="play-pause"]');
+const playPauseButtonIcon = playPauseButton.querySelector('i.fas');
+const volumeControl = document.querySelector('[name="volume"]');
+const currentlyRadioStation = document.querySelector('.currently-playing-label');
+const currentlyPlaying = document.querySelector('.currently-playing-title');
+const volumeButton = document.querySelector('[name="mute"]');
+const volumeButtonIcon = volumeButton.querySelector('i.fas');
+const listStation = document.getElementById('list_station');
+
+let radioStream, radioMetaDataUrl = '';
+let isPlaying = false
+let fetchInterval = null
+let currentVolume = 0.2
+
+audio.volume = currentVolume
+
+function htmlEscape(s) {
+    var map = {
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#039;': "'",
+        '<br />': "/\n"
+    };
+    return s.replace(/&amp;|&lt;|&gt;|&quot;|&#039;|<br \/>/g, function(m) {return map[m];});
+}
+
+for (const station of listStation.children) {
+  station.onclick = () => {
+    currentlyRadioStation.innerText = station.innerText;
+    radioStream = station.dataset.stream;
+    audio.src = radioStream;
+    audio.load();
+    audio.play();
+    if (!isPlaying) {
+      playPauseButtonIcon.classList.remove('fa-play');
+      playPauseButtonIcon.classList.add('fa-pause');
+      playPauseButton.disabled = false;
+      isPlaying = !isPlaying;
+    }
+
+    radioMetaDataUrl = station.dataset.metadata;
+
+    fetchCurrentlyPlaying();
+    fetchInterval = setInterval(fetchCurrentlyPlaying, 3000);
+
+    for (const station of listStation.children) {
+      station.style = 'font-weight:normal;color:#000';
+    }
+    station.style = 'font-weight:bold;color:#009cff';
+  }
+  
+};
+
+/**
+ * Fetches the currently playing
+ * @returns {Promise<any>}
+ */
+const fetchCurrentlyPlaying = () => fetch(radioMetaDataUrl)
+  .then(response => response.json())
+  .then(data => {
+    data.forEach((item, index) => {
+      if (index == 0) {
+        songPlaying = item.singer+' - '+item.song;
+        currentlyPlaying.innerText = htmlEscape(songPlaying);
+      }
+    });
+  });
+
+/**
+ * Adjusts the icon of the "mute" button based on the given volume.
+ * @param volume
+ */
+const adjustVolumeIcon = volume => {
+  volumeButtonIcon.classList.remove('fa-volume-off')
+  volumeButtonIcon.classList.remove('fa-volume-down')
+  volumeButtonIcon.classList.remove('fa-volume-up')
+  volumeButtonIcon.classList.remove('fa-volume-mute')
+
+  if (volume >= 0.75) {
+    volumeButtonIcon.classList.add('fa-volume-up')
+  }
+
+  if (volume < 0.75 && volume >= 0.2) {
+    volumeButtonIcon.classList.add('fa-volume-down')
+  }
+
+  if (volume < 0.2 && volume > 0) {
+    volumeButtonIcon.classList.add('fa-volume-off')
+  }
+
+  if (volume === 0) {
+    volumeButtonIcon.classList.add('fa-volume-mute')
+  }
+}
+volumeControl.addEventListener('input', () => {
+  const volume = parseFloat(volumeControl.value)
+
+  audio.volume = currentVolume = volume
+  currentVolume = volume
+
+  adjustVolumeIcon(volume)
+})
+
+volumeButton.addEventListener('click', () => {
+  if (audio.volume > 0) {
+    adjustVolumeIcon(0)
+    audio.volume = 0
+    volumeControl.value = 0
+  } else {
+    adjustVolumeIcon(currentVolume)
+    audio.volume = currentVolume
+    volumeControl.value = currentVolume
+  }
+})
+playPauseButton.addEventListener('click', () => {
+  if (isPlaying) {
+    audio.pause()
+
+    playPauseButtonIcon.classList.remove('fa-pause')
+    playPauseButtonIcon.classList.add('fa-play')
+
+    clearInterval(fetchInterval)
+    currentlyPlaying.innerText = 'Listen to Some Radio Station'
+  } else {
+    audio.play()
+
+    playPauseButtonIcon.classList.remove('fa-play')
+    playPauseButtonIcon.classList.add('fa-pause')
+
+    fetchCurrentlyPlaying()
+    fetchInterval = setInterval(fetchCurrentlyPlaying, 3000)
+  }
+
+  isPlaying = !isPlaying
+})
+
+</script>
+</body>
+</html>
