@@ -440,6 +440,13 @@ let isPlaying    = false;
 let currentVolume = 0.2;
 let activeItem   = null;
 
+// iOS does not allow JS to control audio volume — hide the controls
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+if (isIOS) {
+  document.querySelector('.volume-area').style.display = 'none';
+}
+
 audio.volume = currentVolume;
 setVolumeTrack(currentVolume);
 
