@@ -235,14 +235,7 @@
       border-radius: 2px;
       outline: none;
       cursor: pointer;
-      background: linear-gradient(
-        to right,
-        var(--accent) 0%,
-        var(--accent) var(--vol, 20%),
-        rgba(255,255,255,0.12) var(--vol, 20%),
-        rgba(255,255,255,0.12) 100%
-      );
-      transition: background 0.1s;
+      background: rgba(255,255,255,0.12);
     }
 
     input[type="range"]::-webkit-slider-thumb {
@@ -459,7 +452,9 @@ function decodeHtml(str) {
 }
 
 function setVolumeTrack(value) {
-  volumeSlider.style.setProperty('--vol', `${value * 100}%`);
+  const pct = Math.round(value * 100);
+  volumeSlider.style.background =
+    `linear-gradient(to right, #7c6ff7 ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
 }
 
 function setPlaying(state) {
