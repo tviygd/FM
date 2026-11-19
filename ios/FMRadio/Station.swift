@@ -65,3 +65,6 @@ let stationGroups: [StationGroup] = [
         station("Гуляй Радіо", "online.radioplayer.ua/GuliayRadio_HD", "radio3guliay"),
     ]),
 ]
+
+/// All stations in list order, used for prev/next switching.
+let allStations = stationGroups.flatMap(\.stations)

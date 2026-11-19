@@ -5,6 +5,7 @@ private extension Color {
     static let appBackground = Color(red: 0x0d / 255, green: 0x0d / 255, blue: 0x1a / 255)
     static let accent = Color(red: 0x7c / 255, green: 0x6f / 255, blue: 0xf7 / 255)
     static let accentLight = Color(red: 0xa8 / 255, green: 0x9f / 255, blue: 1)
+    static let favorite = Color(red: 0xf5 / 255, green: 0xc4 / 255, blue: 0x51 / 255)
 }
 
 struct ContentView: View {
@@ -23,7 +24,12 @@ struct ContentView: View {
                         ForEach(stationGroups) { group in
                             Section {
                                 ForEach(group.stations) { station in
-                                    StationRow(station: station, isActive: player.current == station)
+                                    StationRow(
+                                        station: station,
+                                        isActive: player.current == station,
+                                        isFavorite: player.isFavorite(station),
+                                        onToggleFavorite: { player.toggleFavorite(station) }
+                                    )
                                         .id(station.id)
                                         .contentShape(Rectangle())
                                         .onTapGesture { player.select(station) }
@@ -58,6 +64,8 @@ struct ContentView: View {
 private struct StationRow: View {
     let station: Station
     let isActive: Bool
+    let isFavorite: Bool
+    let onToggleFavorite: () -> Void
 
     var body: some View {
         HStack {
@@ -65,11 +73,18 @@ private struct StationRow: View {
                 .font(.system(size: 15, weight: isActive ? .medium : .regular))
                 .foregroundStyle(isActive ? Color.accentLight : .white.opacity(0.6))
             Spacer()
-            Image(systemName: "chevron.right")
-                .font(.system(size: 9))
-                .foregroundStyle(isActive ? Color.accent : .white.opacity(0.3))
+            Button(action: onToggleFavorite) {
+                Image(systemName: isFavorite ? "star.fill" : "star")
+                    .font(.system(size: 14))
+                    .foregroundStyle(isFavorite ? Color.favorite : .white.opacity(0.3))
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
+            }
+            // Borderless keeps the tap on the star from also selecting the row
+            .buttonStyle(.borderless)
+            .accessibilityLabel(isFavorite ? "Прибрати з обраного" : "Додати в обране")
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, 2)
     }
 }
 
@@ -83,7 +98,7 @@ private struct PlayerCard: View {
                     Circle()
                         .fill(player.isPlaying ? Color.accentLight : .white.opacity(0.3))
                         .frame(width: 6, height: 6)
-                    Text(player.current == nil ? "ОБЕРІТЬ СТАНЦІЮ" : "ЗАРАЗ ГРАЄ")
+                    Text(player.current == nil ? "ОБЕРІТЬ СТАНЦІЮ" : player.wantsToPlay ? "ЗАРАЗ ГРАЄ" : "ОСТАННЯ СТАНЦІЯ")
                         .font(.system(size: 11, weight: .medium))
                         .tracking(1.2)
                         .foregroundStyle(Color.accentLight)
@@ -114,10 +129,11 @@ private struct PlayerCard: View {
                         Circle()
                             .fill(player.current == nil ? Color.white.opacity(0.1) : Color.accent)
                             .shadow(color: Color.accent.opacity(player.current == nil ? 0 : 0.4), radius: 9, y: 4)
-                        if player.isBuffering {
+                        // Spinner while buffering or waiting to reconnect; a tap still pauses
+                        if player.wantsToPlay && !player.isPlaying {
                             ProgressView().tint(.white)
                         } else {
-                            Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
+                            Image(systemName: player.wantsToPlay ? "pause.fill" : "play.fill")
                                 .font(.system(size: 18))
                                 .foregroundStyle(.white)
                         }
@@ -125,12 +141,20 @@ private struct PlayerCard: View {
                     .frame(width: 52, height: 52)
                 }
                 .disabled(player.current == nil)
-                .accessibilityLabel(player.isPlaying ? "Пауза" : "Відтворити")
+                .accessibilityLabel(player.wantsToPlay ? "Пауза" : "Відтворити")
 
                 NavButton(systemName: "forward.fill", label: "Наступна станція") { player.step(by: 1) }
 
                 SystemVolumeSlider()
                     .frame(height: 34)
+            }
+
+            let favoriteCount = allStations.filter(player.isFavorite).count
+            if favoriteCount > 0 {
+                Text("⏮ ⏭ перемикають лише обрані станції (\(favoriteCount))")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.white.opacity(0.3))
+                    .frame(maxWidth: .infinity)
             }
         }
         .padding(22)

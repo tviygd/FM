@@ -354,15 +354,37 @@
       font-weight: 500;
     }
 
-    .station-item .chevron {
-      font-size: 9px;
+    .fav-btn {
+      width: 32px;
+      height: 32px;
+      margin: -6px -8px -6px 8px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
       color: var(--text-muted);
-      transition: color 0.15s;
       flex-shrink: 0;
+      transition: color 0.15s, background 0.15s;
     }
 
-    .station-item.active .chevron {
-      color: var(--accent);
+    .fav-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    .station-item.favorite .fav-btn {
+      color: #f5c451;
+    }
+
+    .nav-hint {
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
     }
   </style>
 </head>
@@ -405,62 +427,63 @@
       <input type="range" id="volume" min="0" max="1" step="0.05" value="0.2" aria-label="Гучність">
     </div>
   </div>
+  <div class="nav-hint" id="nav-hint" hidden></div>
 </div>
 
 <div class="station-list-wrap">
 
   <div class="group-label">KISS FM</div>
   <ul class="stations">
-    <li class="station-item" data-stream="https://online.kissfm.ua/KissFM_HD" data-metadata="https://o.tavrmedia.ua/kiss">KISS FM<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.kissfm.ua/KissFM_Ukr_HD" data-metadata="https://o.tavrmedia.ua/kissukr">KISS FM Ukrainian<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.kissfm.ua/KissFM_Deep_HD" data-metadata="https://o.tavrmedia.ua/kissdeep">KISS FM Deep<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.kissfm.ua/KissFM_Digital_HD" data-metadata="https://o.tavrmedia.ua/kissdigital">KISS FM Digital<i class="fas fa-chevron-right chevron"></i></li>
+    <li class="station-item" data-stream="https://online.kissfm.ua/KissFM_HD" data-metadata="https://o.tavrmedia.ua/kiss">KISS FM<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.kissfm.ua/KissFM_Ukr_HD" data-metadata="https://o.tavrmedia.ua/kissukr">KISS FM Ukrainian<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.kissfm.ua/KissFM_Deep_HD" data-metadata="https://o.tavrmedia.ua/kissdeep">KISS FM Deep<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.kissfm.ua/KissFM_Digital_HD" data-metadata="https://o.tavrmedia.ua/kissdigital">KISS FM Digital<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
   </ul>
 
   <div class="group-label">Radio Relax</div>
   <ul class="stations">
-    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_HD" data-metadata="https://o.tavrmedia.ua/relax">Ефір Радіо Relax<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_Ukr_HD" data-metadata="https://o.tavrmedia.ua/relaxukr">Relax Українською<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_Int_HD" data-metadata="https://o.tavrmedia.ua/relaxint">Relax International<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_Cafe_HD" data-metadata="https://o.tavrmedia.ua/relaxcafe">Relax Cafe<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_Instrumental_HD" data-metadata="https://o.tavrmedia.ua/relaxinstrumental">Relax Instrumental<i class="fas fa-chevron-right chevron"></i></li>
+    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_HD" data-metadata="https://o.tavrmedia.ua/relax">Ефір Радіо Relax<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_Ukr_HD" data-metadata="https://o.tavrmedia.ua/relaxukr">Relax Українською<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_Int_HD" data-metadata="https://o.tavrmedia.ua/relaxint">Relax International<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_Cafe_HD" data-metadata="https://o.tavrmedia.ua/relaxcafe">Relax Cafe<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radiorelax.ua/RadioRelax_Instrumental_HD" data-metadata="https://o.tavrmedia.ua/relaxinstrumental">Relax Instrumental<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
   </ul>
 
   <div class="group-label">Хіт FM</div>
   <ul class="stations">
-    <li class="station-item" data-stream="https://online.hitfm.ua/HitFM_HD" data-metadata="https://o.tavrmedia.ua/hit">Ефір Хіт FM<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.hitfm.ua/HitFM_Ukr_HD" data-metadata="https://o.tavrmedia.ua/hitu">Хіт FM Українські хіти<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.hitfm.ua/HitFM_Best_HD" data-metadata="https://o.tavrmedia.ua/hitb">Хіт FM Найбільші хіти<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.hitfm.ua/HitFM_Top_HD" data-metadata="https://o.tavrmedia.ua/hitt">Хіт FM Сучасні хіти<i class="fas fa-chevron-right chevron"></i></li>
+    <li class="station-item" data-stream="https://online.hitfm.ua/HitFM_HD" data-metadata="https://o.tavrmedia.ua/hit">Ефір Хіт FM<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.hitfm.ua/HitFM_Ukr_HD" data-metadata="https://o.tavrmedia.ua/hitu">Хіт FM Українські хіти<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.hitfm.ua/HitFM_Best_HD" data-metadata="https://o.tavrmedia.ua/hitb">Хіт FM Найбільші хіти<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.hitfm.ua/HitFM_Top_HD" data-metadata="https://o.tavrmedia.ua/hitt">Хіт FM Сучасні хіти<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
   </ul>
 
   <div class="group-label">Мелодія FM</div>
   <ul class="stations">
-    <li class="station-item" data-stream="https://online.melodiafm.ua/MelodiaFM_HD" data-metadata="https://o.tavrmedia.ua/melodia">Ефір Мелодія FM<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.melodiafm.ua/MelodiaFM_Int_HD" data-metadata="https://o.tavrmedia.ua/melodiaint">Мелодія FM International<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.melodiafm.ua/MelodiaFM_Disco_HD" data-metadata="https://o.tavrmedia.ua/melodiad">Мелодія FM Disco<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.melodiafm.ua/MelodiaFM_Romantic_HD" data-metadata="https://o.tavrmedia.ua/melodiar">Мелодія FM Romantic<i class="fas fa-chevron-right chevron"></i></li>
+    <li class="station-item" data-stream="https://online.melodiafm.ua/MelodiaFM_HD" data-metadata="https://o.tavrmedia.ua/melodia">Ефір Мелодія FM<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.melodiafm.ua/MelodiaFM_Int_HD" data-metadata="https://o.tavrmedia.ua/melodiaint">Мелодія FM International<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.melodiafm.ua/MelodiaFM_Disco_HD" data-metadata="https://o.tavrmedia.ua/melodiad">Мелодія FM Disco<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.melodiafm.ua/MelodiaFM_Romantic_HD" data-metadata="https://o.tavrmedia.ua/melodiar">Мелодія FM Romantic<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
   </ul>
 
   <div class="group-label">Radio ROKS</div>
   <ul class="stations">
-    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_HD" data-metadata="https://o.tavrmedia.ua/roks">Ефір Radio ROKS<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_Ukr_HD" data-metadata="https://o.tavrmedia.ua/roksukr">Radio ROKS Український рок<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_NewRock_HD" data-metadata="https://o.tavrmedia.ua/roksnew">Radio ROKS Новий Рок<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_ClassicRock_HD" data-metadata="https://o.tavrmedia.ua/rokscla">Radio ROKS Classic Rock<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_HardnHeavy_HD" data-metadata="https://o.tavrmedia.ua/rokshar">Radio ROKS Hard'n'Heavy<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_Ballads_HD" data-metadata="https://o.tavrmedia.ua/roksbal">Radio ROKS Рок-Балади<i class="fas fa-chevron-right chevron"></i></li>
+    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_HD" data-metadata="https://o.tavrmedia.ua/roks">Ефір Radio ROKS<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_Ukr_HD" data-metadata="https://o.tavrmedia.ua/roksukr">Radio ROKS Український рок<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_NewRock_HD" data-metadata="https://o.tavrmedia.ua/roksnew">Radio ROKS Новий Рок<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_ClassicRock_HD" data-metadata="https://o.tavrmedia.ua/rokscla">Radio ROKS Classic Rock<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_HardnHeavy_HD" data-metadata="https://o.tavrmedia.ua/rokshar">Radio ROKS Hard'n'Heavy<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radioroks.ua/RadioROKS_Ballads_HD" data-metadata="https://o.tavrmedia.ua/roksbal">Radio ROKS Рок-Балади<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
   </ul>
 
   <div class="group-label">Інші</div>
   <ul class="stations">
-    <li class="station-item" data-stream="https://online.radioplayer.ua/FlashRadio_HD" data-metadata="https://o.tavrmedia.ua/radio3flash">Flash Radio<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radioplayer.ua/RadioGold_HD" data-metadata="https://o.tavrmedia.ua/radio3gold">Radio Gold<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radioplayer.ua/RadioIndieUA_HD" data-metadata="https://o.tavrmedia.ua/radio3indieua">Радіо Інді.UA<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radiobayraktar.ua/RadioBayraktar_HD" data-metadata="https://o.tavrmedia.ua/radio3bayraktar">Радіо Байрактар<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.nasheradio.ua/NasheRadio_HD" data-metadata="https://o.tavrmedia.ua/nasheradio">Ефір Наше Радіо<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.nasheradio.ua/NasheRadio_Ukr_HD" data-metadata="https://o.tavrmedia.ua/nasheradio3ukr">Наше Радіо УкрТоп100<i class="fas fa-chevron-right chevron"></i></li>
-    <li class="station-item" data-stream="https://online.radioplayer.ua/GuliayRadio_HD" data-metadata="https://o.tavrmedia.ua/radio3guliay">Гуляй Радіо<i class="fas fa-chevron-right chevron"></i></li>
+    <li class="station-item" data-stream="https://online.radioplayer.ua/FlashRadio_HD" data-metadata="https://o.tavrmedia.ua/radio3flash">Flash Radio<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radioplayer.ua/RadioGold_HD" data-metadata="https://o.tavrmedia.ua/radio3gold">Radio Gold<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radioplayer.ua/RadioIndieUA_HD" data-metadata="https://o.tavrmedia.ua/radio3indieua">Радіо Інді.UA<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radiobayraktar.ua/RadioBayraktar_HD" data-metadata="https://o.tavrmedia.ua/radio3bayraktar">Радіо Байрактар<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.nasheradio.ua/NasheRadio_HD" data-metadata="https://o.tavrmedia.ua/nasheradio">Ефір Наше Радіо<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.nasheradio.ua/NasheRadio_Ukr_HD" data-metadata="https://o.tavrmedia.ua/nasheradio3ukr">Наше Радіо УкрТоп100<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
+    <li class="station-item" data-stream="https://online.radioplayer.ua/GuliayRadio_HD" data-metadata="https://o.tavrmedia.ua/radio3guliay">Гуляй Радіо<button class="fav-btn" aria-label="Додати в обране"><i class="far fa-star"></i></button></li>
   </ul>
 
 </div>
@@ -483,6 +506,30 @@ let fetchInterval = null;
 let isPlaying    = false;
 let currentVolume = 0.2;
 let activeItem   = null;
+let reconnectTimer = null;
+let reconnectAttempt = 0;
+let stallTimer   = null;
+
+const STALL_TIMEOUT = 10000;
+const MAX_RECONNECT_DELAY = 15000;
+
+// localStorage can be unavailable (private mode, blocked site data)
+function storageGet(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+}
+
+function storageSet(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Not persisted; the player still works for this visit
+  }
+}
 
 // iOS does not allow JS to control audio volume — hide the controls
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -566,40 +613,66 @@ function updateMediaSession() {
 }
 
 const stationItems = [...document.querySelectorAll('.station-item')];
+const favorites = new Set(storageGet('fm:favorites', []));
+const navHint = document.getElementById('nav-hint');
 
-function selectStation(item) {
+function stationName(item) {
+  // firstChild is the text node with the station name (before the star button)
+  return item.firstChild.textContent.trim();
+}
+
+function setActiveItem(item) {
   if (activeItem) activeItem.classList.remove('active');
   activeItem = item;
   item.classList.add('active');
-  item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  stationNameEl.textContent = stationName(item);
+  playBtn.disabled = false;
+}
 
-  // firstChild is the text node with the station name (before the <i> chevron)
-  stationNameEl.textContent = item.firstChild.textContent.trim();
+function selectStation(item, { reconnecting = false } = {}) {
+  clearReconnect();
+  if (!reconnecting) {
+    reconnectAttempt = 0;
+    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  setActiveItem(item);
   labelText.textContent = 'Зараз грає';
-  songTitleEl.textContent = 'Завантаження…';
+  songTitleEl.textContent = reconnecting ? 'Перепідключення…' : 'Завантаження…';
 
   audio.src = item.dataset.stream;
   audio.load();
-  audio.play().catch(() => {});
-
-  playBtn.disabled = false;
+  audio.play().catch(err => {
+    // Autoplay blocked (e.g. a reconnect while the page is in the background on iOS)
+    if (err.name === 'NotAllowedError') {
+      clearReconnect();
+      setPlaying(false);
+      stopMetadata();
+      songTitleEl.textContent = 'Натисніть ▶, щоб слухати';
+    }
+  });
   setPlaying(true);
 
   metadataUrl = item.dataset.metadata;
   startMetadata();
   updateMediaSession();
+  storageSet('fm:last', item.dataset.stream);
 }
 
-// Cycle through the list; wraps around at both ends
+// Cycle through favorites (or all stations if there are none); wraps around at both ends
 function stepStation(delta) {
-  const i = stationItems.indexOf(activeItem);
-  const next = i === -1
-    ? (delta > 0 ? 0 : stationItems.length - 1)
-    : (i + delta + stationItems.length) % stationItems.length;
-  selectStation(stationItems[next]);
+  const favoriteItems = stationItems.filter(item => favorites.has(item.dataset.stream));
+  const pool = favoriteItems.length ? favoriteItems : stationItems;
+  const n = stationItems.length;
+  let i = stationItems.indexOf(activeItem);
+  if (i === -1) i = delta > 0 ? -1 : n;
+  for (let step = 1; step <= n; step++) {
+    const item = stationItems[(((i + delta * step) % n) + n) % n];
+    if (pool.includes(item)) return selectStation(item);
+  }
 }
 
 function pausePlayback() {
+  clearReconnect();
   audio.pause();
   setPlaying(false);
   stopMetadata();
@@ -611,6 +684,94 @@ function resumePlayback() {
   // Re-open the live stream so playback continues from the live edge, not the stale buffer
   if (activeItem) selectStation(activeItem);
 }
+
+// ── Favorites ──────────────────────────────────────
+function renderFavorite(item) {
+  const on = favorites.has(item.dataset.stream);
+  const btn = item.querySelector('.fav-btn');
+  item.classList.toggle('favorite', on);
+  btn.querySelector('i').className = on ? 'fas fa-star' : 'far fa-star';
+  btn.setAttribute('aria-label', on ? 'Прибрати з обраного' : 'Додати в обране');
+  btn.setAttribute('aria-pressed', String(on));
+}
+
+function renderNavHint() {
+  const count = stationItems.filter(item => favorites.has(item.dataset.stream)).length;
+  navHint.hidden = count === 0;
+  navHint.textContent = `⏮ ⏭ перемикають лише обрані станції (${count})`;
+}
+
+stationItems.forEach(item => {
+  renderFavorite(item);
+  item.querySelector('.fav-btn').addEventListener('click', event => {
+    event.stopPropagation();
+    const stream = item.dataset.stream;
+    if (favorites.has(stream)) favorites.delete(stream); else favorites.add(stream);
+    storageSet('fm:favorites', [...favorites]);
+    renderFavorite(item);
+    renderNavHint();
+  });
+});
+renderNavHint();
+
+// ── Auto-reconnect ─────────────────────────────────
+function clearReconnect() {
+  clearTimeout(reconnectTimer);
+  reconnectTimer = null;
+  clearTimeout(stallTimer);
+  stallTimer = null;
+}
+
+// Retries with growing delays (2, 4, 8, 15, 15… s) until it plays again or the user pauses
+function scheduleReconnect() {
+  if (!isPlaying || !activeItem || reconnectTimer) return;
+  clearTimeout(stallTimer);
+  stallTimer = null;
+  stopMetadata();
+  const delay = Math.min(2000 * 2 ** reconnectAttempt, MAX_RECONNECT_DELAY);
+  reconnectAttempt++;
+  songTitleEl.textContent = `Немає зв'язку, повтор через ${delay / 1000} с…`;
+  reconnectTimer = setTimeout(() => {
+    reconnectTimer = null;
+    selectStation(activeItem, { reconnecting: true });
+  }, delay);
+}
+
+function watchForStall() {
+  if (!isPlaying || stallTimer || reconnectTimer) return;
+  const startTime = audio.currentTime;
+  stallTimer = setTimeout(() => {
+    stallTimer = null;
+    // Some browsers report "stalled" while still playing from the buffer
+    if (audio.currentTime - startTime < 1) scheduleReconnect();
+  }, STALL_TIMEOUT);
+}
+
+audio.addEventListener('error', scheduleReconnect);
+audio.addEventListener('ended', scheduleReconnect);
+audio.addEventListener('waiting', watchForStall);
+audio.addEventListener('stalled', watchForStall);
+audio.addEventListener('playing', () => {
+  clearTimeout(stallTimer);
+  stallTimer = null;
+  reconnectAttempt = 0;
+});
+window.addEventListener('online', () => {
+  if (reconnectTimer) selectStation(activeItem, { reconnecting: true });
+});
+
+// ── Last station ───────────────────────────────────
+// Browsers block autoplay, so the last station is preselected and starts on the first ▶ press
+function restoreLastStation() {
+  const stream = storageGet('fm:last', null);
+  const item = stationItems.find(i => i.dataset.stream === stream);
+  if (!item) return;
+  setActiveItem(item);
+  labelText.textContent = 'Остання станція';
+  songTitleEl.textContent = 'Натисніть ▶, щоб слухати';
+  item.scrollIntoView({ block: 'nearest' });
+}
+restoreLastStation();
 
 stationItems.forEach(item => item.addEventListener('click', () => selectStation(item)));
 document.getElementById('prev-btn').addEventListener('click', () => stepStation(-1));
@@ -664,14 +825,6 @@ function updateMuteIcon(volume) {
                      :                  'fas fa-volume-up';
 }
 
-// Audio error handling
-audio.addEventListener('error', () => {
-  if (isPlaying) {
-    setPlaying(false);
-    stopMetadata();
-    songTitleEl.textContent = 'Помилка підключення';
-  }
-});
 </script>
 
 </body>
