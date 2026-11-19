@@ -204,12 +204,39 @@
       cursor: not-allowed;
     }
 
+    .nav-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    .controls.no-volume {
+      justify-content: center;
+      gap: 28px;
+    }
+
     /* Volume */
     .volume-area {
       display: flex;
       align-items: center;
       gap: 10px;
       flex: 1;
+      min-width: 0;
     }
 
     .mute-btn {
@@ -239,6 +266,7 @@
       -webkit-appearance: none;
       appearance: none;
       flex: 1;
+      min-width: 0;
       height: 4px;
       border-radius: 2px;
       outline: none;
@@ -310,6 +338,8 @@
       border: 1px solid transparent;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
       user-select: none;
+      scroll-margin-top: 240px;
+      scroll-margin-bottom: 16px;
     }
 
     .station-item:hover {
@@ -359,8 +389,14 @@
   </div>
 
   <div class="controls">
+    <button class="nav-btn" id="prev-btn" aria-label="Попередня станція">
+      <i class="fas fa-step-backward"></i>
+    </button>
     <button class="play-btn" id="play-btn" disabled aria-label="Відтворити / Пауза">
       <i class="fas fa-play"></i>
+    </button>
+    <button class="nav-btn" id="next-btn" aria-label="Наступна станція">
+      <i class="fas fa-step-forward"></i>
     </button>
     <div class="volume-area">
       <button class="mute-btn" id="mute-btn" aria-label="Вимкнути звук">
@@ -453,6 +489,7 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 if (isIOS) {
   document.querySelector('.volume-area').style.display = 'none';
+  document.querySelector('.controls').classList.add('no-volume');
 }
 
 audio.volume = currentVolume;
@@ -475,6 +512,9 @@ function setVolumeTrack(value) {
 function setPlaying(state) {
   isPlaying = state;
   playIcon.className = state ? 'fas fa-pause' : 'fas fa-play';
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.playbackState = state ? 'playing' : 'paused';
+  }
   if (state) {
     liveDot.classList.remove('off');
     equalizer.classList.remove('paused');
@@ -503,50 +543,95 @@ async function fetchMetadata() {
     const data = await res.json();
     if (Array.isArray(data) && data.length > 0) {
       const { singer, song } = data[0];
-      songTitleEl.textContent = decodeHtml(`${singer} — ${song}`);
+      const title = decodeHtml(`${singer} — ${song}`);
+      if (title !== songTitleEl.textContent) {
+        songTitleEl.textContent = title;
+        updateMediaSession();
+      }
     }
   } catch {
     // Ignore network / CORS errors silently
   }
 }
 
-// Station click
-document.querySelectorAll('.station-item').forEach(item => {
-  item.addEventListener('click', () => {
-    if (activeItem) activeItem.classList.remove('active');
-    activeItem = item;
-    item.classList.add('active');
-
-    // firstChild is the text node with the station name (before the <i> chevron)
-    stationNameEl.textContent = item.firstChild.textContent.trim();
-    labelText.textContent = 'Зараз грає';
-    songTitleEl.textContent = 'Завантаження…';
-
-    audio.src = item.dataset.stream;
-    audio.load();
-    audio.play().catch(() => {});
-
-    playBtn.disabled = false;
-    setPlaying(true);
-
-    metadataUrl = item.dataset.metadata;
-    startMetadata();
+// Track info for the lock screen, car head unit and Bluetooth devices
+function updateMediaSession() {
+  if (!('mediaSession' in navigator) || !activeItem) return;
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: songTitleEl.textContent,
+    artist: stationNameEl.textContent,
+    album: 'FM Radio',
+    artwork: [{ src: 'icon-512.png', sizes: '512x512', type: 'image/png' }],
   });
-});
+}
 
-// Play / pause
-playBtn.addEventListener('click', () => {
-  if (isPlaying) {
-    audio.pause();
-    setPlaying(false);
-    stopMetadata();
-    songTitleEl.textContent = 'Призупинено';
-  } else {
-    audio.play().catch(() => {});
-    setPlaying(true);
-    startMetadata();
+const stationItems = [...document.querySelectorAll('.station-item')];
+
+function selectStation(item) {
+  if (activeItem) activeItem.classList.remove('active');
+  activeItem = item;
+  item.classList.add('active');
+  item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+  // firstChild is the text node with the station name (before the <i> chevron)
+  stationNameEl.textContent = item.firstChild.textContent.trim();
+  labelText.textContent = 'Зараз грає';
+  songTitleEl.textContent = 'Завантаження…';
+
+  audio.src = item.dataset.stream;
+  audio.load();
+  audio.play().catch(() => {});
+
+  playBtn.disabled = false;
+  setPlaying(true);
+
+  metadataUrl = item.dataset.metadata;
+  startMetadata();
+  updateMediaSession();
+}
+
+// Cycle through the list; wraps around at both ends
+function stepStation(delta) {
+  const i = stationItems.indexOf(activeItem);
+  const next = i === -1
+    ? (delta > 0 ? 0 : stationItems.length - 1)
+    : (i + delta + stationItems.length) % stationItems.length;
+  selectStation(stationItems[next]);
+}
+
+function pausePlayback() {
+  audio.pause();
+  setPlaying(false);
+  stopMetadata();
+  songTitleEl.textContent = 'Призупинено';
+  updateMediaSession();
+}
+
+function resumePlayback() {
+  // Re-open the live stream so playback continues from the live edge, not the stale buffer
+  if (activeItem) selectStation(activeItem);
+}
+
+stationItems.forEach(item => item.addEventListener('click', () => selectStation(item)));
+document.getElementById('prev-btn').addEventListener('click', () => stepStation(-1));
+document.getElementById('next-btn').addEventListener('click', () => stepStation(1));
+playBtn.addEventListener('click', () => (isPlaying ? pausePlayback() : resumePlayback()));
+
+if ('mediaSession' in navigator) {
+  const handlers = {
+    play: resumePlayback,
+    pause: pausePlayback,
+    previoustrack: () => stepStation(-1),
+    nexttrack: () => stepStation(1),
+  };
+  for (const [action, handler] of Object.entries(handlers)) {
+    try {
+      navigator.mediaSession.setActionHandler(action, handler);
+    } catch {
+      // Action not supported by this browser
+    }
   }
-});
+}
 
 // Volume slider
 volumeSlider.addEventListener('input', () => {

@@ -61,6 +61,19 @@ final class RadioPlayer: ObservableObject {
         updateNowPlaying()
     }
 
+    /// Cycles through all stations in list order, wrapping around at both ends.
+    func step(by delta: Int) {
+        let stations = stationGroups.flatMap(\.stations)
+        guard !stations.isEmpty else { return }
+        let next: Int
+        if let current, let index = stations.firstIndex(of: current) {
+            next = (index + delta % stations.count + stations.count) % stations.count
+        } else {
+            next = delta > 0 ? 0 : stations.count - 1
+        }
+        select(stations[next])
+    }
+
     func togglePlayPause() {
         if isPlaying || isBuffering { pause() } else { resume() }
     }
@@ -169,6 +182,17 @@ final class RadioPlayer: ObservableObject {
         }
         center.togglePlayPauseCommand.addTarget { [weak self] _ in
             Task { @MainActor in self?.togglePlayPause() }
+            return .success
+        }
+        // Steering-wheel / Bluetooth / CarPlay "next" and "previous" switch stations
+        center.nextTrackCommand.isEnabled = true
+        center.nextTrackCommand.addTarget { [weak self] _ in
+            Task { @MainActor in self?.step(by: 1) }
+            return .success
+        }
+        center.previousTrackCommand.isEnabled = true
+        center.previousTrackCommand.addTarget { [weak self] _ in
+            Task { @MainActor in self?.step(by: -1) }
             return .success
         }
     }

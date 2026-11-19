@@ -18,30 +18,37 @@ struct ContentView: View {
                 PlayerCard()
                     .padding(.horizontal, 16)
 
-                List {
-                    ForEach(stationGroups) { group in
-                        Section {
-                            ForEach(group.stations) { station in
-                                StationRow(station: station, isActive: player.current == station)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture { player.select(station) }
-                                    .listRowBackground(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(player.current == station ? Color.accent.opacity(0.18) : .clear)
-                                            .padding(.vertical, 1)
-                                    )
-                                    .listRowSeparator(.hidden)
+                ScrollViewReader { proxy in
+                    List {
+                        ForEach(stationGroups) { group in
+                            Section {
+                                ForEach(group.stations) { station in
+                                    StationRow(station: station, isActive: player.current == station)
+                                        .id(station.id)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture { player.select(station) }
+                                        .listRowBackground(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(player.current == station ? Color.accent.opacity(0.18) : .clear)
+                                                .padding(.vertical, 1)
+                                        )
+                                        .listRowSeparator(.hidden)
+                                }
+                            } header: {
+                                Text(group.title.uppercased())
+                                    .font(.system(size: 10, weight: .semibold))
+                                    .tracking(1)
+                                    .foregroundStyle(.white.opacity(0.3))
                             }
-                        } header: {
-                            Text(group.title.uppercased())
-                                .font(.system(size: 10, weight: .semibold))
-                                .tracking(1)
-                                .foregroundStyle(.white.opacity(0.3))
                         }
                     }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .onChange(of: player.current) { station in
+                        guard let station else { return }
+                        withAnimation { proxy.scrollTo(station.id) }
+                    }
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
             }
             .padding(.top, 8)
         }
@@ -98,6 +105,8 @@ private struct PlayerCard: View {
             }
 
             HStack(spacing: 14) {
+                NavButton(systemName: "backward.fill", label: "Попередня станція") { player.step(by: -1) }
+
                 Button {
                     player.togglePlayPause()
                 } label: {
@@ -118,6 +127,8 @@ private struct PlayerCard: View {
                 .disabled(player.current == nil)
                 .accessibilityLabel(player.isPlaying ? "Пауза" : "Відтворити")
 
+                NavButton(systemName: "forward.fill", label: "Наступна станція") { player.step(by: 1) }
+
                 SystemVolumeSlider()
                     .frame(height: 34)
             }
@@ -128,6 +139,23 @@ private struct PlayerCard: View {
                 .fill(.white.opacity(0.05))
                 .overlay(RoundedRectangle(cornerRadius: 24).stroke(.white.opacity(0.08)))
         )
+    }
+}
+
+private struct NavButton: View {
+    let systemName: String
+    let label: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 16))
+                .foregroundStyle(.white.opacity(0.6))
+                .frame(width: 40, height: 40)
+                .contentShape(Circle())
+        }
+        .accessibilityLabel(label)
     }
 }
 
